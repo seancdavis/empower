@@ -1,5 +1,5 @@
 require 'empower/engine'
-require 'empower/configuration'
+require 'empower/omniauth'
 
 module Empower
 end
