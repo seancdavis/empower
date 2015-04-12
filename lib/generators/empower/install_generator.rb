@@ -7,14 +7,10 @@ module Empower
 
     source_root File.expand_path('../../templates', __FILE__)
 
-    # Make sure everything else is set up properly
-    #
     def verify_prereqs
       perform_checks
     end
 
-    # Add OmniAuth lines to Devise config
-    #
     def add_devise_config
       insert_into_file(
         'config/initializers/devise.rb',
@@ -23,8 +19,6 @@ module Empower
       )
     end
 
-    # Add Devise strategy to user model
-    #
     def add_model_concern
       insert_into_file(
         'app/models/user.rb',
@@ -33,13 +27,19 @@ module Empower
       )
     end
 
-    # Add gems to Gemfile
-    #
     def add_gems
       insert_into_file(
         'Gemfile',
         "\ngem 'omniauth-facebook'",
         :after => /^source(.*)\n/
+      )
+    end
+
+    def add_routes
+      insert_into_file(
+        'config/routes.rb',
+        ', :controllers => { :omniauth_callbacks => "empower/omniauth_callbacks" }',
+        :after => 'devise_for :users'
       )
     end
 
