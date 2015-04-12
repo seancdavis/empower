@@ -43,6 +43,14 @@ module Empower
       )
     end
 
+    def add_helper
+      insert_into_file(
+        'app/controllers/application_controller.rb',
+        "  helper Empower::OmniauthHelper\n",
+        :after => /class\ ApplicationController(.*)\n/
+      )
+    end
+
     private
 
       def perform_checks
