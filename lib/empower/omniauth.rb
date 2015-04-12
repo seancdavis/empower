@@ -24,8 +24,17 @@ module Empower
           if attrs.keys.size > 0
             user.update_columns(attrs)
           end
-        elsif user.respond_to?(:name)
-          user.update(:name => auth.info.name)
+        else
+          attrs = {}
+          if user.respond_to?(:name)
+            attrs[:name] = auth.info.name
+          end
+          if user.respond_to?(:image)
+            attrs[:image] = auth.info.image
+          end
+          if attrs.keys.size > 0
+            user.update_columns(attrs)
+          end
         end
         user
       end
