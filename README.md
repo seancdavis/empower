@@ -18,7 +18,7 @@ Installation
 Add this line to your application's Gemfile:
 
 ```text
-gem 'cambium'
+gem 'empower'
 ```
 
 And then execute:
@@ -30,7 +30,7 @@ $ bundle
 Or install it yourself as:
 
 ```text
-$ gem install cambium
+$ gem install empower
 ```
 
 Requirements
@@ -85,7 +85,7 @@ Otherwise, if you want to handle your own links, they would look like this:
 Contributing
 ----------
 
-1. Fork it ( https://github.com/[my-github-username]/cambium/fork )
+1. Fork it ( https://github.com/[my-github-username]/empower/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
