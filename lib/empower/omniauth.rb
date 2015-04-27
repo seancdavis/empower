@@ -15,10 +15,10 @@ module Empower
             :password => Devise.friendly_token[0,20],
           )
           attrs = {}
-          if user.respond_to?(:name)
+          if ActiveRecord::Base.connection.column_exists?(:users, :name, :string)
             attrs[:name] = auth.info.name
           end
-          if user.respond_to?(:image)
+          if ActiveRecord::Base.connection.column_exists?(:users, :image, :string)
             attrs[:image] = auth.info.image
           end
           if attrs.keys.size > 0
@@ -26,10 +26,10 @@ module Empower
           end
         else
           attrs = {}
-          if user.respond_to?(:name)
+          if ActiveRecord::Base.connection.column_exists?(:users, :name, :string)
             attrs[:name] = auth.info.name
           end
-          if user.respond_to?(:image)
+          if ActiveRecord::Base.connection.column_exists?(:users, :image, :string)
             attrs[:image] = auth.info.image
           end
           if attrs.keys.size > 0
