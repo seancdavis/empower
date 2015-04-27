@@ -82,6 +82,17 @@ Otherwise, if you want to handle your own links, they would look like this:
 <%= link_to 'Login', user_omniauth_authorize_path(:facebook) %>
 ```
 
+Overriding Redirects
+----------
+
+When you are signed in successfully through Facebook, Empower uses Devise's
+`after_sign_in_path_for` method. You can customize this method in your
+application controller
+
+[See this doc page](https://github.com/plataformatec/devise/wiki/How-To
+:-redirect-to-a -specific-page-on-successful-sign-in#redirect-back-to-current-
+page-after-oauth- signin) for more information.
+
 Contributing
 ----------
 
