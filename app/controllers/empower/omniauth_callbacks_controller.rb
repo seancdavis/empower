@@ -7,10 +7,10 @@ class Empower::OmniauthCallbacksController < EmpowerController
 
     if @user.persisted?
       sign_in @user #this will throw if @user is not activated
-      redirect_to redirect_path
+      redirect_to after_sign_in_path_for(@user)
     else
       session["devise.facebook_data"] = request.env["omniauth.auth"]
-      redirect_to redirect_path
+      redirect_to after_sign_in_path_for(@user)
     end
   end
 
@@ -20,15 +20,5 @@ class Empower::OmniauthCallbacksController < EmpowerController
       :alert => "Could not authenticate your request."
     )
   end
-
-  private
-
-    def redirect_path
-      if defined? omniauth_redirect_path
-        omniauth_redirect_path(@user)
-      else
-        main_app.root_path
-      end
-    end
 
 end
