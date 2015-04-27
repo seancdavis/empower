@@ -1,0 +1,2 @@
+class EmpowerController < ApplicationController
+end
