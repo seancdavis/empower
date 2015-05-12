@@ -6,7 +6,7 @@ module Empower
         text,
         main_app.user_omniauth_authorize_path(:facebook),
         :class => 'button facebook'
-      )
+      ) unless user_signed_in?
     end
 
   end
