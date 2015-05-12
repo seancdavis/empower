@@ -2,51 +2,61 @@ module Empower
   module OmniAuth
     extend ActiveSupport::Concern
 
+    TEMP_EMAIL_PREFIX = 'change@me'
+    TEMP_EMAIL_REGEX = /\Achange@me/
+
     included do
       devise :omniauthable, :omniauth_providers => [:facebook]
+
+      validates_format_of :email, :without => TEMP_EMAIL_REGEX, :on => :update
+    end
+
+    def email_verified?
+      self.email && self.email !~ TEMP_EMAIL_REGEX
     end
 
     module ClassMethods
-      def from_omniauth(auth)
-        user = User.find_by_email(auth.info.email)
+      def find_for_oauth(auth, signed_in_resource = nil)
+
+        # Get the identity and user if they exist
+        identity = Identity.find_for_oauth(auth)
+
+        # If a signed_in_resource is provided it always overrides the existing user
+        # to prevent the identity being locked with accidentally created accounts.
+        # Note that this may leave zombie accounts (with no associated identity) which
+        # can be cleaned up at a later date.
+        user = signed_in_resource ? signed_in_resource : identity.user
+
+        # Create the user if needed
         if user.nil?
-          user = User.create!(
-            :email => auth.info.email,
-            :password => Devise.friendly_token[0,20],
-          )
-          attrs = {}
-          if ActiveRecord::Base.connection.column_exists?(:users, :name, :string)
-            attrs[:name] = auth.info.name
+
+          # Get the existing user by email if the provider gives us a verified email.
+          # If no verified email was provided we assign a temporary email and ask the
+          # user to verify it on the next step via UsersController.finish_signup
+          email_is_verified = auth.info.email && (auth.info.verified || auth.info.verified_email)
+          email = auth.info.email if email_is_verified
+          user = User.where(:email => email).first if email
+
+          # Create the user if it's a new registration
+          if user.nil?
+            user = User.new(
+              name: auth.extra.raw_info.name,
+              #username: auth.info.nickname || auth.uid,
+              email: email ? email : "#{TEMP_EMAIL_PREFIX}-#{auth.uid}-#{auth.provider}.com",
+              password: Devise.friendly_token[0,20]
+            )
+            user.save!
           end
-          if ActiveRecord::Base.connection.column_exists?(:users, :image, :string)
-            attrs[:image] = auth.info.image
-          end
-          if attrs.keys.size > 0
-            user.update_columns(attrs)
-          end
-        else
-          attrs = {}
-          if ActiveRecord::Base.connection.column_exists?(:users, :name, :string)
-            attrs[:name] = auth.info.name
-          end
-          if ActiveRecord::Base.connection.column_exists?(:users, :image, :string)
-            attrs[:image] = auth.info.image
-          end
-          if attrs.keys.size > 0
-            user.update_columns(attrs)
-          end
+        end
+
+        # Associate the identity with the user if needed
+        if identity.user != user
+          identity.user = user
+          identity.save!
         end
         user
       end
-
-      def new_with_session(params, session)
-        super.tap do |user|
-          if data = session["devise.facebook_data"] &&
-            session["devise.facebook_data"]["extra"]["raw_info"]
-              user.email = data["email"] if user.email.blank?
-          end
-        end
-      end
     end
+
   end
 end

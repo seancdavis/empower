@@ -3,6 +3,7 @@ PATH
   specs:
     empower (0.2.0)
       devise
+      omniauth
       omniauth-facebook
       rails (~> 4.1.0)
 

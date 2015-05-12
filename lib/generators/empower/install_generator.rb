@@ -5,10 +5,24 @@ module Empower
   class InstallGenerator < Rails::Generators::Base
     desc "Add OmniAuth config to Devise"
 
-    source_root File.expand_path('../../templates', __FILE__)
+    source_root File.expand_path('../templates', __FILE__)
 
     def verify_prereqs
       perform_checks
+    end
+
+    def add_omniauth_columns_to_users
+      cols = ''
+      cols += 'name ' unless User.new.respond_to?(:name)
+      cols += 'image ' unless User.new.respond_to?(:image)
+      unless cols.blank?
+        generate "migration add_omniauth_columns_to_users #{cols}"
+      end
+    end
+
+    def add_identity_model
+      generate "model identity user:references provider:string uid:string"
+      template "identity_model.rb", "app/models/identity.rb", :force => true
     end
 
     def add_devise_config
