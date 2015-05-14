@@ -1,5 +1,7 @@
 class EmpowerController < Devise::OmniauthCallbacksController
 
+  include Empower::RoutesHelper
+
   private
 
     def after_sign_in_path_for(resource)
