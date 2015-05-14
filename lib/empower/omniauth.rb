@@ -9,6 +9,8 @@ module Empower
       devise :omniauthable,
              :omniauth_providers => [:facebook, :google_oauth2, :twitter]
 
+      has_many :identities
+
       validates_format_of :email, :without => TEMP_EMAIL_REGEX, :on => :update
     end
 

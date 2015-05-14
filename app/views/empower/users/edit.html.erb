@@ -1,0 +1,6 @@
+<h2>Enter an Email Address</h2>
+
+<%= simple_form_for current_user, :url => empower.complete_signup_path do |f| %>
+  <%= f.input :email, :input_html => { :value => '' } %>
+  <%= f.submit "Save Email Address" %>
+<% end %>

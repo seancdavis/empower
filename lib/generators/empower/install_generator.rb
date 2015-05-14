@@ -58,6 +58,11 @@ module Empower
         ', :controllers => { :omniauth_callbacks => "empower/omniauth_callbacks" }',
         :after => 'devise_for :users'
       )
+      insert_into_file(
+        'config/routes.rb',
+        "  mount Empower::Engine => '/'\n",
+        :after => /Rails\.application\.routes\.draw\ do(.*)\n/
+      )
     end
 
     def add_helper
