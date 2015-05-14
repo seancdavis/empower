@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'omniauth'
   spec.add_dependency 'omniauth-facebook'
   spec.add_dependency 'omniauth-google-oauth2'
+  spec.add_dependency 'omniauth-twitter'
 
   spec.add_development_dependency "bundler", "~> 1.6"
 end

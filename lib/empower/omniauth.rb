@@ -6,7 +6,8 @@ module Empower
     TEMP_EMAIL_REGEX = /\Achange@me/
 
     included do
-      devise :omniauthable, :omniauth_providers => [:facebook, :google_oauth2]
+      devise :omniauthable,
+             :omniauth_providers => [:facebook, :google_oauth2, :twitter]
 
       validates_format_of :email, :without => TEMP_EMAIL_REGEX, :on => :update
     end

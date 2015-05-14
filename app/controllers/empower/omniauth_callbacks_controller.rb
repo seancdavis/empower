@@ -27,7 +27,7 @@ class Empower::OmniauthCallbacksController < EmpowerController
     )
   end
 
-  [:facebook, :google_oauth2].each do |provider|
+  [:facebook, :google_oauth2, :twitter].each do |provider|
     provides_callback_for provider
   end
 
