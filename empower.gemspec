@@ -19,9 +19,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "rails", "~> 4.1.0"
-  spec.add_dependency "devise"
+  # spec.add_dependency "rails", "~> 4.1.0"
+  spec.add_dependency 'devise'
+  spec.add_dependency 'omniauth'
   spec.add_dependency 'omniauth-facebook'
+  spec.add_dependency 'omniauth-google-oauth2'
+  spec.add_dependency 'omniauth-twitter'
+  spec.add_dependency 'simple_form'
 
   spec.add_development_dependency "bundler", "~> 1.6"
 end

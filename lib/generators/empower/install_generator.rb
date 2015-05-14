@@ -5,16 +5,33 @@ module Empower
   class InstallGenerator < Rails::Generators::Base
     desc "Add OmniAuth config to Devise"
 
-    source_root File.expand_path('../../templates', __FILE__)
+    source_root File.expand_path('../templates', __FILE__)
 
     def verify_prereqs
       perform_checks
     end
 
+    def add_omniauth_columns_to_users
+      cols = ''
+      cols += 'name ' unless User.new.respond_to?(:name)
+      cols += 'image ' unless User.new.respond_to?(:image)
+      unless cols.blank?
+        generate "migration add_omniauth_columns_to_users #{cols}"
+      end
+    end
+
+    def add_identity_model
+      generate "model identity user:references provider:string uid:string"
+      template "identity_model.rb", "app/models/identity.rb", :force => true
+    end
+
     def add_devise_config
+      config  = "\n  config.omniauth :facebook, 'APP_ID', 'APP_SECRET'"
+      config += "\n  config.omniauth :google_oauth2, 'APP_ID', 'APP_SECRET'"
+      config += "\n  config.omniauth :twitter, 'APP_ID', 'APP_SECRET'"
       insert_into_file(
         'config/initializers/devise.rb',
-        "\n  config.omniauth :facebook, 'APP_ID', 'APP_SECRET'",
+        config,
         :after => 'Devise.setup do |config|'
       )
     end
@@ -41,6 +58,11 @@ module Empower
         ', :controllers => { :omniauth_callbacks => "empower/omniauth_callbacks" }',
         :after => 'devise_for :users'
       )
+      insert_into_file(
+        'config/routes.rb',
+        "  mount Empower::Engine => '/'\n",
+        :after => /Rails\.application\.routes\.draw\ do(.*)\n/
+      )
     end
 
     def add_helper
@@ -48,6 +70,24 @@ module Empower
         'app/controllers/application_controller.rb',
         "  helper Empower::OmniauthHelper\n",
         :after => /class\ ApplicationController(.*)\n/
+      )
+    end
+
+    def add_routes_helper
+      m  = "\n  def method_missing(method, *args, &block)\n"
+      m += "    if(\n"
+      m += "      (method.to_s.end_with?('_path') || method.to_s.end_with?('_url')) &&\n"
+      m += "      main_app.respond_to?(method)\n"
+      m += "    )\n"
+      m += "      main_app.send(method, *args)\n"
+      m += "    else\n"
+      m += "      super\n"
+      m += "    end\n"
+      m += "  end\n\n"
+      insert_into_file(
+        'app/helpers/application_helper.rb',
+        m,
+        :after => /module\ ApplicationHelper(.*)\n/
       )
     end
 
