@@ -73,6 +73,24 @@ module Empower
       )
     end
 
+    def add_routes_helper
+      m  = "\n  def method_missing(method, *args, &block)\n"
+      m += "    if(\n"
+      m += "      (method.to_s.end_with?('_path') || method.to_s.end_with?('_url')) &&\n"
+      m += "      main_app.respond_to?(method)\n"
+      m += "    )\n"
+      m += "      main_app.send(method, *args)\n"
+      m += "    else\n"
+      m += "      super\n"
+      m += "    end\n"
+      m += "  end\n\n"
+      insert_into_file(
+        'app/helpers/application_helper.rb',
+        m,
+        :after => /module\ ApplicationHelper(.*)\n/
+      )
+    end
+
     private
 
       def perform_checks

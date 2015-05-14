@@ -1,7 +1,5 @@
 class Empower::UsersController < ApplicationController
 
-  include Empower::RoutesHelper
-
   before_filter :authenticate_user!
   before_filter :verify_unverified_email
 
