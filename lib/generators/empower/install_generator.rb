@@ -26,9 +26,12 @@ module Empower
     end
 
     def add_devise_config
+      config  = "\n  config.omniauth :facebook, 'APP_ID', 'APP_SECRET'"
+      config += "\n  config.omniauth :google_oauth2, 'APP_ID', 'APP_SECRET'"
+      config += "\n  config.omniauth :twitter, 'APP_ID', 'APP_SECRET'"
       insert_into_file(
         'config/initializers/devise.rb',
-        "\n  config.omniauth :facebook, 'APP_ID', 'APP_SECRET'",
+        config,
         :after => 'Devise.setup do |config|'
       )
     end
