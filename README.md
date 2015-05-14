@@ -39,10 +39,11 @@ $ gem install empower
 Requirements
 ----------
 
-There are two major prerequisites to using Empower:
+There are three major prerequisites to using Empower:
 
 * Using/installing [Devise](https://github.com/plataformatec/devise)
 * Creating a `User` model
+* Add `name` and `image` to your `User` model
 
 Referencing [this section in Devise's
 README](https://github.com/plataformatec/devise#getting-started), this means
@@ -52,6 +53,9 @@ you should run the following commands:
 $ bundle exec rails g devise:install
 $ bundle exec rails g devise User
 ```
+
+Meanwhile, the `empower:install` generator will take care of adding the
+migration for the added columns. Just double check it.
 
 Usage
 ----------
